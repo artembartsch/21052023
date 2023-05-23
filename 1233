@@ -1,0 +1,60 @@
+template<typename T> class EEPROMVar 
+00025 {
+00026     public:
+00027       EEPROMVar(T init) {
+00028         address = EEPROM.getAddress(sizeof(T)); 
+00029         var = init;
+00030       }
+00031       operator T () { 
+00032         return var; 
+00033       }
+00034       EEPROMVar &operator=(T val) {
+00035         var = val;
+00036         return *this;
+00037       }
+00038       
+00039       void operator+=(T val) {
+00040         var += T(val); 
+00041       }
+00042       void operator-=(T val) {
+00043         var -= T(val); 
+00044       }       
+00045       void operator++(int) {
+00046         var += T(1); 
+00047       }
+00048       void operator--(int) {
+00049         var -= T(1); 
+00050       }
+00051       void operator++() {
+00052         var += T(1); 
+00053       }
+00054       void operator--() {
+00055         var -= T(1); 
+00056       }
+00057       template<typename V>
+00058         void operator /= (V divisor) {
+00059         var = var / divisor;
+00060       }
+00061       template<typename V>
+00062         void operator *= (V multiplicator) {
+00063         var = var * multiplicator;
+00064       }
+00065       void save(){         
+00066         EEPROM.writeBlock<T>(address, var);
+00067       }
+00068       
+00069       void update(){           
+00070         EEPROM.updateBlock<T>(address, var);
+00071       }
+00072       
+00073       int getAddress(){        
+00074         return address;
+00075       }
+00076       
+00077       void restore(){
+00078         EEPROM.readBlock<T>(address, var);
+00079       }
+00080     protected:  
+00081       T var;
+00082       int address;
+00083 };
